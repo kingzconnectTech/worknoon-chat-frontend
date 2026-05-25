@@ -9,6 +9,12 @@ import ChatCard from '../components/ChatCard';
 import ChatWindow from '../components/ChatWindow';
 import clsx from 'clsx';
 
+const recipientOptions = [
+  { type: 'agent', icon: Shield, title: 'Customer Service Agent', description: 'Get help from an available agent', color: 'blue' },
+  { type: 'merchant', icon: Briefcase, title: 'Merchant', description: 'Chat with your preferred merchant', color: 'amber' },
+  { type: 'designer', icon: User, title: 'Designer', description: 'Chat with your preferred designer', color: 'pink' }
+];
+
 const Inbox = () => {
   const { 
     conversations, 
@@ -110,16 +116,7 @@ const Inbox = () => {
 
         {/* Conversation List */}
         <div className="flex-1 overflow-y-auto scrollbar-custom p-4 space-y-2">
-          {loading ? (
-            <div className="flex items-center justify-center mt-10">
-              <Loader2 size={32} className={clsx("animate-spin", theme === "dark" ? "text-muted" : "text-muted-light")} />
-            </div>
-          ) : error ? (
-            <div className={clsx("text-center mt-10 p-4 rounded-xl border", theme === "dark" ? "text-red-400 bg-red-500/10 border-red-500/20" : "text-red-600 bg-red-50 border-red-200")}>
-              <p className="font-semibold">Error loading conversations</p>
-              <p className="text-sm mt-1">{error}</p>
-            </div>
-          ) : filteredConversations.length === 0 ? (
+          {filteredConversations.length === 0 ? (
             <div className={clsx("text-center mt-10", theme === "dark" ? "text-muted" : "text-muted-light")}>No conversations found.</div>
           ) : (
             filteredConversations.map(conv => {
@@ -133,7 +130,6 @@ const Inbox = () => {
                   otherParticipant={otherParticipant}
                   isActive={activeConversation?._id === conv._id}
                   isOnline={isOnline}
-                  currentUserId={user._id}
                   onClick={() => {
                     setActiveConversation(conv);
                     socketService.joinConversation(conv._id);
@@ -209,65 +205,32 @@ const Inbox = () => {
             )}
 
             <div className="space-y-4">
-              <button
-                onClick={() => handleStartNewChat('agent')}
-                disabled={routing}
-                className={clsx(
-                  "w-full flex items-center gap-4 p-4 rounded-2xl transition-all disabled:opacity-70",
-                  theme === "dark" 
-                    ? "bg-card border border-white/10 hover:bg-white/5" 
-                    : "bg-white border border-slate-200 hover:bg-slate-50"
-                )}
-              >
-                <div className="p-3 bg-blue-500/15 rounded-xl text-blue-400">
-                  <Shield size={24} />
-                </div>
-                <div className="flex-1 text-left">
-                  <h4 className={clsx("font-semibold", theme === "dark" ? "text-text" : "text-slate-900")}>Customer Service Agent</h4>
-                  <p className={clsx("text-sm", theme === "dark" ? "text-muted" : "text-muted-light")}>Get help from an available agent</p>
-                </div>
-                {routing && <Loader2 size={20} className={clsx("animate-spin", theme === "dark" ? "text-muted" : "text-muted-light")} />}
-              </button>
-
-              <button
-                onClick={() => handleStartNewChat('merchant')}
-                disabled={routing}
-                className={clsx(
-                  "w-full flex items-center gap-4 p-4 rounded-2xl transition-all disabled:opacity-70",
-                  theme === "dark" 
-                    ? "bg-card border border-white/10 hover:bg-white/5" 
-                    : "bg-white border border-slate-200 hover:bg-slate-50"
-                )}
-              >
-                <div className="p-3 bg-amber-500/15 rounded-xl text-amber-400">
-                  <Briefcase size={24} />
-                </div>
-                <div className="flex-1 text-left">
-                  <h4 className={clsx("font-semibold", theme === "dark" ? "text-text" : "text-slate-900")}>Merchant</h4>
-                  <p className={clsx("text-sm", theme === "dark" ? "text-muted" : "text-muted-light")}>Chat with your preferred merchant</p>
-                </div>
-                {routing && <Loader2 size={20} className={clsx("animate-spin", theme === "dark" ? "text-muted" : "text-muted-light")} />}
-              </button>
-
-              <button
-                onClick={() => handleStartNewChat('designer')}
-                disabled={routing}
-                className={clsx(
-                  "w-full flex items-center gap-4 p-4 rounded-2xl transition-all disabled:opacity-70",
-                  theme === "dark" 
-                    ? "bg-card border border-white/10 hover:bg-white/5" 
-                    : "bg-white border border-slate-200 hover:bg-slate-50"
-                )}
-              >
-                <div className="p-3 bg-pink-500/15 rounded-xl text-pink-400">
-                  <User size={24} />
-                </div>
-                <div className="flex-1 text-left">
-                  <h4 className={clsx("font-semibold", theme === "dark" ? "text-text" : "text-slate-900")}>Designer</h4>
-                  <p className={clsx("text-sm", theme === "dark" ? "text-muted" : "text-muted-light")}>Chat with your preferred designer</p>
-                </div>
-                {routing && <Loader2 size={20} className={clsx("animate-spin", theme === "dark" ? "text-muted" : "text-muted-light")} />}
-              </button>
+              {recipientOptions.map(({ type, icon: Icon, title, description, color }) => (
+                <button
+                  key={type}
+                  onClick={() => handleStartNewChat(type)}
+                  disabled={routing}
+                  className={clsx(
+                    "w-full flex items-center gap-4 p-4 rounded-2xl transition-all disabled:opacity-70",
+                    theme === "dark" 
+                      ? "bg-card border border-white/10 hover:bg-white/5" 
+                      : "bg-white border border-slate-200 hover:bg-slate-50"
+                  )}
+                >
+                  <div className={clsx("p-3 rounded-xl", {
+                    "bg-blue-500/15 text-blue-400": color === "blue",
+                    "bg-amber-500/15 text-amber-400": color === "amber",
+                    "bg-pink-500/15 text-pink-400": color === "pink"
+                  })}>
+                    <Icon size={24} />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <h4 className={clsx("font-semibold", theme === "dark" ? "text-text" : "text-slate-900")}>{title}</h4>
+                    <p className={clsx("text-sm", theme === "dark" ? "text-muted" : "text-muted-light")}>{description}</p>
+                  </div>
+                  {routing && <Loader2 size={20} className={clsx("animate-spin", theme === "dark" ? "text-muted" : "text-muted-light")} />}
+                </button>
+              ))}
             </div>
           </div>
         </div>

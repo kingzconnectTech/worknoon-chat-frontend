@@ -2,16 +2,12 @@ import { formatDistanceToNow } from 'date-fns';
 import clsx from 'clsx';
 import useThemeStore from '../store/useThemeStore';
 
-const ChatCard = ({ conversation, otherParticipant, isActive, isOnline, onClick, currentUserId }) => {
+const ChatCard = ({ conversation, otherParticipant, isActive, isOnline, onClick }) => {
   const lastMessage = conversation.lastMessage;
   const { theme } = useThemeStore();
   const timeString = lastMessage?.createdAt 
     ? formatDistanceToNow(new Date(lastMessage.createdAt), { addSuffix: true }) 
     : '';
-
-  const unreadCount = currentUserId && conversation.unreadCounts 
-    ? conversation.unreadCounts[currentUserId] || 0 
-    : 0;
 
   return (
     <div 
@@ -84,17 +80,17 @@ const ChatCard = ({ conversation, otherParticipant, isActive, isOnline, onClick,
                   ? "text-muted" 
                   : "text-muted-light"
             )}>
-              {lastMessage?.text || lastMessage?.content || 'Started a conversation'}
+              {lastMessage?.content || 'Started a conversation'}
             </p>
-            {/* Unread Badge */}
-            {unreadCount > 0 && (
+            {/* Unread Badge (Mocked for now) */}
+            {conversation.unreadCount > 0 && (
               <span className="ml-2 flex-shrink-0 inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full text-xs font-bold"
                 style={{ 
                   background: theme === "dark" ? 'white' : '#7C3AED', 
                   color: theme === "dark" ? '#7C3AED' : 'white' 
                 }}
               >
-                {unreadCount}
+                {conversation.unreadCount}
               </span>
             )}
           </div>
