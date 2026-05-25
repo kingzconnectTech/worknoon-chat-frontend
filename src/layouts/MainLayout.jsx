@@ -135,7 +135,7 @@ const MainLayout = () => {
       </nav>
 
       {/* Main Content Area */}
-      <main className="flex-1 relative flex flex-col min-w-0 pb-20 lg:pb-0">
+      <main className="flex-1 relative flex flex-col min-w-0 pb-20 lg:pb-0 overflow-y-auto">
         <Outlet />
       </main>
 

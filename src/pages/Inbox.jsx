@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Search, Plus, MessageSquare, X, User, Shield, Briefcase, Loader2 } from 'lucide-react';
+import { Search, Plus, MessageSquare, X, User, Shield, Briefcase, Loader2, Sun, Moon } from 'lucide-react';
 import useChatStore from '../store/useChatStore';
 import useAuthStore from '../store/useAuthStore';
 import useThemeStore from '../store/useThemeStore';
@@ -19,7 +19,7 @@ const Inbox = () => {
   } = useChatStore();
   
   const { user, isAuthenticated } = useAuthStore();
-  const { theme } = useThemeStore();
+  const { theme, toggleTheme } = useThemeStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [showRecipientModal, setShowRecipientModal] = useState(false);
   const [routing, setRouting] = useState(false);
