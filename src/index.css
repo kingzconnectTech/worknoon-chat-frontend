@@ -58,6 +58,10 @@
   }
 }
 
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 @utility glass {
   background-color: color-mix(in srgb, var(--color-card) 80%, transparent);
   backdrop-filter: blur(12px);

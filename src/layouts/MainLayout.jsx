@@ -29,6 +29,28 @@ const SidebarItem = ({ icon: Icon, label, to }) => {
   );
 };
 
+const BottomNavItem = ({ icon: Icon, label, to }) => {
+  const { theme } = useThemeStore();
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        clsx(
+          'flex flex-col items-center justify-center gap-1 transition-all duration-200',
+          isActive
+            ? 'text-accent'
+            : theme === 'dark' ? 'text-muted' : 'text-muted-light'
+        )
+      }
+    >
+      {({ isActive }) => (
+        <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+      )}
+      <span className="text-xs font-medium">{label}</span>
+    </NavLink>
+  );
+};
+
 const MainLayout = () => {
   const { user, logout } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
@@ -41,12 +63,12 @@ const MainLayout = () => {
 
   return (
     <div className={clsx(
-      "flex h-screen overflow-hidden font-sans",
+      "flex flex-col lg:flex-row h-screen overflow-hidden font-sans",
       theme === "dark" ? "bg-background text-text" : "bg-white text-slate-900"
     )}>
-      {/* Global Sidebar Navigation */}
+      {/* Global Sidebar Navigation (hidden on mobile) */}
       <nav className={clsx(
-        "w-20 lg:w-24 border-r flex flex-col items-center py-6 z-20",
+        "hidden lg:flex w-20 lg:w-24 border-r flex flex-col items-center py-6 z-20",
         theme === "dark" 
           ? "border-white/5 glass" 
           : "border-slate-100 glass-light"
@@ -66,7 +88,6 @@ const MainLayout = () => {
         </div>
         
         <div className="mt-auto flex flex-col items-center gap-3">
-          {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
             className={clsx(
@@ -81,7 +102,6 @@ const MainLayout = () => {
             {theme === "dark" ? <Sun size={22} /> : <Moon size={22} />}
           </button>
 
-          {/* Avatar Preview */}
           <div className={clsx(
             "w-10 h-10 rounded-full border-2 flex items-center justify-center overflow-hidden",
             theme === "dark" 
@@ -115,9 +135,35 @@ const MainLayout = () => {
       </nav>
 
       {/* Main Content Area */}
-      <main className="flex-1 relative flex flex-col min-w-0">
+      <main className="flex-1 relative flex flex-col min-w-0 pb-20 lg:pb-0">
         <Outlet />
       </main>
+
+      {/* Bottom Navigation (visible on mobile) */}
+      <nav className={clsx(
+        "lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t flex items-center justify-around p-3 pb-safe",
+        theme === "dark" 
+          ? "border-white/5 glass" 
+          : "border-slate-100 glass-light"
+      )}>
+        <BottomNavItem icon={MessageSquare} label="Inbox" to="/" />
+        <BottomNavItem icon={User} label="Profile" to="/profile" />
+        {user?.role === 'admin' && (
+          <BottomNavItem icon={LayoutDashboard} label="Dashboard" to="/dashboard" />
+        )}
+        <button
+          onClick={toggleTheme}
+          className={clsx(
+            "flex flex-col items-center justify-center gap-1",
+            theme === "dark" ? "text-muted" : "text-muted-light"
+          )}
+          title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          {theme === "dark" ? <Sun size={24} /> : <Moon size={24} />}
+          <span className="text-xs font-medium">Theme</span>
+        </button>
+      </nav>
     </div>
   );
 };
