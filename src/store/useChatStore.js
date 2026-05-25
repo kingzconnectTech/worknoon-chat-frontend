@@ -38,9 +38,13 @@ const useChatStore = create((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.get('/conversations');
+      console.log('fetchConversations response:', response);
+      console.log('response.data:', response.data);
+      console.log('response.data.data:', response.data.data);
       set({ conversations: response.data.data.conversations || [], loading: false });
     } catch (error) {
-      set({ error: error.response?.data?.error || 'Failed to load conversations', loading: false });
+      console.error('fetchConversations error:', error);
+      set({ error: error.response?.data?.message || error.response?.data?.error || error.message || 'Failed to load conversations', loading: false });
     }
   },
 
@@ -49,9 +53,11 @@ const useChatStore = create((set, get) => ({
     try {
       // Assuming message fetching route is /messages/:conversationId
       const response = await api.get(`/messages/${conversation._id}`);
+      console.log('setActiveConversation response:', response);
       set({ messages: response.data.data.messages || [], loading: false });
     } catch (error) {
-      set({ error: error.response?.data?.error || 'Failed to load messages', loading: false });
+      console.error('setActiveConversation error:', error);
+      set({ error: error.response?.data?.message || error.response?.data?.error || error.message || 'Failed to load messages', loading: false });
     }
   },
 

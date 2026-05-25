@@ -110,7 +110,16 @@ const Inbox = () => {
 
         {/* Conversation List */}
         <div className="flex-1 overflow-y-auto scrollbar-custom p-4 space-y-2">
-          {filteredConversations.length === 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center mt-10">
+              <Loader2 size={32} className={clsx("animate-spin", theme === "dark" ? "text-muted" : "text-muted-light")} />
+            </div>
+          ) : error ? (
+            <div className={clsx("text-center mt-10 p-4 rounded-xl border", theme === "dark" ? "text-red-400 bg-red-500/10 border-red-500/20" : "text-red-600 bg-red-50 border-red-200")}>
+              <p className="font-semibold">Error loading conversations</p>
+              <p className="text-sm mt-1">{error}</p>
+            </div>
+          ) : filteredConversations.length === 0 ? (
             <div className={clsx("text-center mt-10", theme === "dark" ? "text-muted" : "text-muted-light")}>No conversations found.</div>
           ) : (
             filteredConversations.map(conv => {
@@ -124,6 +133,7 @@ const Inbox = () => {
                   otherParticipant={otherParticipant}
                   isActive={activeConversation?._id === conv._id}
                   isOnline={isOnline}
+                  currentUserId={user._id}
                   onClick={() => {
                     setActiveConversation(conv);
                     socketService.joinConversation(conv._id);
