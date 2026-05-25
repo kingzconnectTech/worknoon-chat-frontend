@@ -35,7 +35,7 @@ const MessageBubble = ({ message, isOwn }) => {
             <div className="mt-3 flex flex-wrap gap-2">
               {message.attachments.map((attach, idx) => {
                 const isImage = attach.match(/\.(jpeg|jpg|gif|png|webp)$/i);
-                const fileUrl = attach.startsWith('http') ? attach : `${API_URL}/${attach}`;
+                const fileUrl = attach.startsWith('http') ? attach : `${BASE_URL}/${attach}`;
                 const fileName = attach.split('/').pop();
 
                 if (isImage) {
