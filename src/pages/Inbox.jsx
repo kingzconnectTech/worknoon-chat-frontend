@@ -70,12 +70,25 @@ const Inbox = () => {
         )}>
           <div className="flex items-center justify-between mb-6">
             <h1 className={clsx("text-2xl font-bold", theme === "dark" ? "text-text" : "text-slate-900")}>Messages</h1>
-            <button 
-              onClick={() => setShowRecipientModal(true)}
-              className="p-2 rounded-xl bg-accent/20 text-accent hover:bg-accent/30 transition-colors"
-            >
-              <Plus size={20} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={toggleTheme}
+                className={clsx(
+                  "p-2 rounded-xl transition-colors",
+                  theme === "dark"
+                    ? "text-muted hover:bg-white/5 hover:text-white"
+                    : "text-muted-light hover:bg-slate-100 hover:text-slate-900"
+                )}
+              >
+                {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+              <button 
+                onClick={() => setShowRecipientModal(true)}
+                className="p-2 rounded-xl bg-accent/20 text-accent hover:bg-accent/30 transition-colors"
+              >
+                <Plus size={20} />
+              </button>
+            </div>
           </div>
           
           <div className="relative">
